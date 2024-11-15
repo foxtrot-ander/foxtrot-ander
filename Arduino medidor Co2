@@ -1,0 +1,79 @@
+#include <LiquidCrystal.h> // Incluir la librería para el uso del LCD
+
+// Variables y pines
+int alarma = 10; // Pin del zumbador de alarma
+int vibracion = 6; // Pin de salida para la vibración
+const int pinSensorCO2 = A1; // Pin para el sensor de CO2
+float co2 = 0; // Variable para almacenar la concentración de CO2
+
+const int normalLevel = 1500;  // Nivel de CO2 normal
+const int mediumLevel = 3250;  // Nivel de CO2 medio
+const int dangerLevel = 5000;  // Nivel de CO2 peligroso
+
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2); // Inicializar el objeto LCD con los pines correspondientes
+
+void setup() {
+  Serial.begin(9600); // Inicializar comunicación serial
+
+  pinMode(pinSensorCO2, INPUT); // Configurar el pin del sensor de CO2 como entrada
+  lcd.begin(16, 2); // Inicializar el LCD con 16 columnas y 2 filas
+
+  pinMode(alarma, OUTPUT); // Configurar el pin del zumbador de alarma como salida
+  pinMode(vibracion, OUTPUT); // Configurar el pin de vibración como salida
+
+  // Mostrar los créditos y el menú en la consola serial
+  displayCredits();
+}
+
+void loop() {
+  // Leer el valor del sensor de CO2 (simulación de lectura análoga)
+  co2 = analogRead(pinSensorCO2); // Leer valor del sensor
+  co2 = map(co2, 0, 1023, 0, 5000); // Mapear el valor de 0-1023 a un rango de 0-5000 ppm
+
+  // Mostrar el estado en la pantalla LCD
+  displayCO2Status(co2);
+
+  delay(3000); // Esperar 5 segundos antes de tomar otra lectura
+}
+
+void displayCredits() {
+  // Mostrar los créditos al inicio
+  Serial.println("================================");
+  Serial.println("          MENÚ DE OPCIONES      ");
+  Serial.println("================================");
+  Serial.println("1. Medir concentracion de CO2"); // Mide los niveles de carbono en el espacio
+  Serial.println("2. Salir"); // Termina el programa
+  Serial.println("================================");
+  Serial.println("Realizado por:");
+  Serial.println("Daniel Esteban Ascencio Triana");
+  Serial.println("Anderson Jarley Diaz Tarriba");
+  Serial.println("Yohjan Daniel Loaiza Loaiza");
+  Serial.println("Ing de Sistemas II Semestre 2024.");
+  Serial.println("-------------------------------");
+}
+
+void displayCO2Status(float co2) {
+  lcd.clear();  // Limpiar la pantalla LCD
+  lcd.setCursor(0, 0);
+  lcd.print("CO2: ");
+  lcd.print(co2); // Mostrar el valor de CO2 en ppm
+
+  lcd.setCursor(0, 1);
+  // Determinar el estado según el nivel de CO2
+  if (co2 <= normalLevel) {
+    lcd.print("Estado: NORMAL");
+    noTone(alarma); // Detener la alarma si el nivel es normal
+    digitalWrite(vibracion, LOW); // Apagar la vibración
+  } 
+  else if (co2 <= mediumLevel) {
+    lcd.print("Estado: CUIDADO");
+    noTone(alarma); // Detener la alarma si el nivel es intermedio
+    digitalWrite(vibracion, HIGH); // Activar la vibración
+    delay(2000); // Mantener la vibración por 2 segundos
+    digitalWrite(vibracion, LOW); // Desactivar la vibración
+  } 
+  else {
+    lcd.print("Estado: PELIGRO");
+    tone(alarma, 1000, 10000); // Activar la alarma solo cuando el nivel es superior a 5000 ppm
+  }
+}
