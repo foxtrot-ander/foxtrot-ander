@@ -1,0 +1,65 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+
+// Programa hecho por:
+// Yojhan Daniel Loaiza Loaiza
+// Daniel Esteban Ascencio Triana
+// Anderson Jarley Diaz Tarriba
+// Tecnologías Aprendidas
+
+
+using namespace std;
+
+// Función de creación de archivos
+void Crear_Archivo(const string& Archivomedidor)
+{
+    ofstream archivo(Archivomedidor);
+    if (!archivo) {
+        cerr << "No se pudo crear el archivo." << endl;
+    } else {
+        cout << "Archivo '" << Archivomedidor << "' creado." << endl;
+    }
+    archivo.close();
+}
+
+// Función de ingresar datos 
+void Ingresar_Datos_al_Archivo(const string& Archivomedidor)
+{
+    ofstream archivo(Archivomedidor, ios::app); // Abrir en modo de agregar
+    if (!archivo) {
+        cerr << "No se pudo abrir el archivo." << endl;
+        return;
+    }
+
+    string fecha, hora;
+    double co2;
+
+    cout << "Ingrese la fecha de la lectura (DD/MM/AAAA): ";
+    cin >> fecha;
+    cout << "Ingrese la hora de la lectura (HH:MM): ";
+    cin >> hora;
+    cout << "Ingrese el nivel de CO2 (ppm): ";
+    cin >> co2;
+
+    archivo << "Fecha: " << fecha << "\n";
+    archivo << "Hora: " << hora << "\n";
+    archivo << "Nivel de CO2: " << co2 << " ppm\n";
+    archivo << "---------------------------\n";
+    archivo.close();
+
+    cout << "Datos de la lectura ingresados.\n";
+}
+
+int main()
+{
+    const string Archivomedidor = "lecturade_CO2.txt";
+    
+    // Crear archivo
+    Crear_Archivo(Archivomedidor);
+    
+    // Ingresar datos de lectura
+    Ingresar_Datos_al_Archivo(Archivomedidor);
+    
+    return 0;
+}
