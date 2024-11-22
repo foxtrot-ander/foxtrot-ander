@@ -1,65 +1,271 @@
-#include <iostream>
-#include <fstream>
-#include <string>
+//Programa creado por:
+//Anderson Jarley Diaz, Daniel Esteban Ascencio, Yojhan Daniel Loaiza
+//Conctacto:
+//ajdiazt@sanmateo.edu.co
+//deascenciot@sanmateo.edu.co
+//ydloaizal@sanmateo.edu.co
+//Tegnologias Aprendidas
+//2024
+#include <iostream> // Proporciona herramientas de entrada y salida de la consola
+#include <fstream> // Proporciona herramientas de entrada y salida de archivo
+#include <string> // Proporciona el uso de datos string: facilita el uso de cadenas de caracteres
 
-// Programa hecho por:
-// Yojhan Daniel Loaiza Loaiza
-// Daniel Esteban Ascencio Triana
-// Anderson Jarley Diaz Tarriba
-// Tecnologías Aprendidas
+using namespace std; // Permite programar sin usar el prefijo std;
 
 
-using namespace std;
+const int MAX_USUARIOS = 10;  // Establece el número máximo de usuarios permitidos
+string usuarios[MAX_USUARIOS][2];  // Matriz que almacena el nombre de usuario y contraseña 
 
-// Función de creación de archivos
-void Crear_Archivo(const string& Archivomedidor)
-{
-    ofstream archivo(Archivomedidor);
-    if (!archivo) {
-        cerr << "No se pudo crear el archivo." << endl;
-    } else {
-        cout << "Archivo '" << Archivomedidor << "' creado." << endl;
-    }
-    archivo.close();
+// Declaracion de funciones void y bool
+void Mostrar_Desarrolladores(); // Declara una funcion que muestra la parte de desarrolladores cuando se requiera
+void Crear_Archivo(const string& nombreUsuario); // Declara la variable para la creacion del archivo
+void Ingresar_Datos_al_Archivo(const string& nombreUsuario);//Declara una variable para el ingreso de datos al archivo
+void Registrar_Usuario(); // Declara una variable para el registro(Nombre de usuario y contraseña)
+bool Iniciar_Sesion(string& nombreUsuario); // Declara una variable de tipo bool que guarda si el inicio de sesion fue exitoso o no
+void Mostrar_Archivo_Usuario(const string& nombreUsuario);//Declara una variable para que se muestren los datos del archivo al usuario
+void Eliminar_Archivo(const string& nombreUsuario); // Declara una funcion para la eliminacion del archivo
+void Modificar_Archivo(const string& nombreUsuario); // Declara una funcion para la modificacion del archivo
+void Modificar_Datos_Usuario(string& nombreUsuario); // Declara una funcion para la modificacion de los datos del usuario
+
+// Función que muestra los nombres de los desarrolladores
+void Mostrar_Desarrolladores()//Llama a la funcion para mostrar el apartado de desarrolladores
+{      //Cuadro mostrado al inicio del programa
+    cout << "********************************************\n";
+    cout << "*      Programa desarrollado por:          *\n";
+    cout << "*------------------------------------------*\n";
+    cout << "*  1. Anderson Jarley Diaz                 *\n";
+    cout << "*  2. Daniel Esteban Ascencio              *\n";
+    cout << "*  3. Yojhan Daniel Loaiza                 *\n";
+    cout << "********************************************\n\n";
 }
 
-// Función de ingresar datos 
-void Ingresar_Datos_al_Archivo(const string& Archivomedidor)
+void Crear_Archivo(const string& nombreUsuario) // Llama a la funcion creada. Esta funcion crea un archivo especifico para cada usuario
 {
-    ofstream archivo(Archivomedidor, ios::app); // Abrir en modo de agregar
-    if (!archivo) {
-        cerr << "No se pudo abrir el archivo." << endl;
+    string nombreArchivo = nombreUsuario + "_lectura_CO2.txt"; // Se construye el nombre del archivo con el nombre de usuario
+    ofstream archivo(nombreArchivo); // Ofstream para crear o abrir el archivo. Se abre el archivo en modo escritura
+
+    if (!archivo) {  // Si el archivo no se pudo crear
+        cerr << "No se pudo crear el archivo." << endl;  // Muestra un mensaje de error
+    } else { //De lo contrario
+        cout << "Archivo '" << nombreArchivo << "' creado." << endl;  // Notifica que el archivo fue creado exitosamente
+    }
+
+    archivo.close();  // Se cierra el archivo
+}
+
+void Ingresar_Datos_al_Archivo(const string& nombreUsuario) // Llama a la funcion para ingresar lo datos deseados al archivo
+{
+    string nombreArchivo = nombreUsuario + "_lectura_CO2.txt";  // Para nombrar al archivo junto al nombre del usuario
+    ofstream archivo(nombreArchivo, ios::app);  // "Ofstream" para abrir el archivo y "ios::app" para abrirlo en el modo agregar
+
+    if (!archivo) {  // Si el archivo no se pudo abrir
+        cerr << "No se pudo abrir el archivo." << endl; // Muestra un mensaje de error 
         return;
     }
 
-    string fecha, hora;
-    double co2;
+    string fecha, hora; // Se crean datos de tipo string para "fecha" y "Hora"
+    double co2; // "Double" para crear una variable de tipo numero real con decimales para almacenar los niveles de CO2 ingresados
 
-    cout << "Ingrese la fecha de la lectura (DD/MM/AAAA): ";
-    cin >> fecha;
-    cout << "Ingrese la hora de la lectura (HH:MM): ";
-    cin >> hora;
-    cout << "Ingrese el nivel de CO2 (ppm): ";
-    cin >> co2;
+    cout << "Ingrese la fecha de la lectura (DD/MM/AAAA): "; // Solicita la fecha al usuario
+    cin >> fecha; // Almacena la respuesta del usuario
+    cout << "Ingrese la hora de la lectura (HH:MM): "; // Solicita la hora al usuario
+    cin >> hora; // Almacena la respuesta del usuario
+    cout << "Ingrese el nivel de CO2 (ppm): "; // Solicita el nivel de CO2 registrado 
+    cin >> co2; // Almacena la respuesta del usuario
 
-    archivo << "Fecha: " << fecha << "\n";
-    archivo << "Hora: " << hora << "\n";
-    archivo << "Nivel de CO2: " << co2 << " ppm\n";
+    
+    archivo << "Fecha: " << fecha << "\n"; // Escribe la fecha en el archivo
+    archivo << "Hora: " << hora << "\n"; // Escribe la hora en el archivo
+    archivo << "Nivel de CO2: " << co2 << " ppm\n"; // Escribe el nivel de CO2 en el archivo
     archivo << "---------------------------\n";
-    archivo.close();
 
-    cout << "Datos de la lectura ingresados.\n";
+    archivo.close();  //  Cierra el archivo
+    cout << "Datos de la lectura ingresados.\n";  // Confirma al usuario que los datos fueron ingresados
 }
 
-int main()
+void Registrar_Usuario() // Funcion para el registro de un usuario
 {
-    const string Archivomedidor = "lecturade_CO2.txt";
+    string nombreUsuario, contraseña; // Crea la cadena con las variables para el nombre del usuario y la contraseña
+
     
-    // Crear archivo
-    Crear_Archivo(Archivomedidor);
+    cout << "Ingrese el nombre de usuario: "; // Solicita el nombre que desea ingresar el usuario
+    cin >> nombreUsuario; // Guarda el nombre digitado or el usuario
+    cout << "Ingrese la contraseña: "; // Solicita la contraseña que desea establecer el usuario
+    cin >> contraseña; // Guarda la contraseña digitada
+
+
     
-    // Ingresar datos de lectura
-    Ingresar_Datos_al_Archivo(Archivomedidor);
-    
-    return 0;
+    for (int i = 0; i < MAX_USUARIOS; i++) { // Busca un espacio vacío en la matriz de usuarios para poder registrar a un nuevo usuario
+        if (usuarios[i][0].empty()) {  // Si encuentra un espacio vacío
+            usuarios[i][0] = nombreUsuario;  // Registra el nombre de usuario
+            usuarios[i][1] = contraseña;  // Registra la contraseña
+            cout << "Usuario registrado con éxito." << endl; // Muestra un mensaje notificando que el usuario fue creado con exito
+            return;
+        }
+    }
+
+    cout << "No se pudo registrar el usuario. No hay espacio." << endl;  // Si no hay espacio disponible
 }
+
+bool Iniciar_Sesion(string& nombreUsuario) // LLama a la funcion para el inicio de la sesion
+{
+    string contraseña; // Crea la variable para contraseña
+
+    
+    cout << "Ingrese su nombre de usuario: "; // Solicita el nombre de usuario
+    cin >> nombreUsuario; // Guarda el nombre
+    cout << "Ingrese su contraseña: ";// Solicita la contraseña de usuario
+    cin >> contraseña; // Guarda la contraseña
+
+    
+    for (int i = 0; i < MAX_USUARIOS; i++) { // Verifica si el nombre de usuario y la contraseña coinciden
+        if (usuarios[i][0] == nombreUsuario && usuarios[i][1] == contraseña) { // Si el nombre y la contraseña coinciden:
+            cout << "Inicio de sesión exitoso.\n"; // Muestra un mensaje para el exito del inicio de sesion
+            return true;  // Si los datos son correctos, inicia sesión
+        }
+    }
+
+    cout << "Nombre de usuario o contraseña incorrectos.\n";  // Si los datos no coinciden
+    return false; // "Return false" para que el programa sepa que el inicio de sesion fue incorrecto y continue mostrando la interfaz de registro e inicio de sesion
+}
+
+void Mostrar_Archivo_Usuario(const string& nombreUsuario) // Se llama a la funcion para mostrar los datos del archivo en la terminal
+{
+    string nombreArchivo = nombreUsuario + "_lectura_CO2.txt";  //  Para nombrar al archivo junto al nombre del usuario
+    ifstream archivo(nombreArchivo);  // Ifstream para abrir el archivo en modo lectura
+
+    if (!archivo) {  // Si no se puede abrir el archivo
+        cerr << "No se pudo abrir el archivo de usuario." << endl; // Muestra un mensaje de error
+        return; // Para terminar correctamente la funcion
+    }
+
+    string linea; // Declara la variable tipo string "Linea" que alamcenara cada linea del archivo
+    while (getline(archivo, linea)) { // Se muestra el contenido del archivo línea por línea
+        cout << linea << endl; // Imprime en pantalla las linea
+    }
+
+    archivo.close();  // Se cierra el archivo
+}
+
+void Eliminar_Archivo(const string& nombreUsuario)
+{
+    string nombreArchivo = nombreUsuario + "_lectura_CO2.txt";  // Para nombrar al archivo junto al nombre del usuario
+
+    
+    if (remove(nombreArchivo.c_str()) == 0) { //Intenta eliminar el archivo
+        cout << "Archivo '" << nombreArchivo << "' eliminado correctamente.\n";  // Muestra si se eliminó el archivo
+    } else { // De lo contrario 
+        cerr << "No se pudo eliminar el archivo.\n";  // Si no se puede eliminar el archivo
+    }
+}
+
+void Modificar_Archivo(const string& nombreUsuario) // Llama a la funcion para la modificacion de los datos
+{
+    string nombreArchivo = nombreUsuario + "_lectura_CO2.txt";  // Para nombrar al archivo junto al nombre del usuario
+    fstream archivo(nombreArchivo, ios::in | ios::out);  // "ios::in" y "ios::" Para abrir el archivo en modo lectura y escritura
+
+    if (!archivo) {  // Si no se puede abrir el archivo
+        cerr << "No se pudo abrir el archivo.\n"; // Notifica por pantalla que no se pudo abrir el archivo
+        return; //Finaliza correctamente la funcion
+    }
+
+    string nuevoContenido, linea; // Crea las variables par guardar el contenido y almacenaran cada linea de texto
+    cin.ignore(); // ignora el salto de linea pendiente
+    cout << "Ingrese el contenido (finalice con una línea vacía):\n"; // Pide al usuario digitar el contenido
+    while (getline(cin, linea) && !linea.empty()) { // "getline(cin, linea)": Lee una línea de texto y la almacena en la variable "linea". La función "getline" lee hasta que el usuario presiona Enter.
+//"linea.empty" Verifica que la línea no esté vacía. Si la línea no está vacía (si el usuario escribe algo), el bucle continuará.
+        nuevoContenido += linea + "\n";  // Almacena el nuevo contenido
+    }
+
+    archivo.close();  // Cierra el archivo de lectura/escritura
+    ofstream archivoOut(nombreArchivo, ios::trunc);  // "ios::trunc" Abre el archivo en modo truncado (sobrescribe sobre los datos del archivo)
+    archivoOut << nuevoContenido;  // Escribe el nuevo contenido
+    archivoOut.close();  // Cierra el archivo
+
+    cout << "Archivo modificado correctamente.\n";  // Notifica que el archivo fue modificado con exito
+}
+
+void Modificar_Datos_Usuario(string& nombreUsuario) // Llama a la funcion para modificar datos del usuario
+{
+    string nuevaContraseña, nuevoNombreUsuario; // Crea las variables para los nuevos datos del usuario
+    cout << "Ingrese un nuevo nombre de usuario: "; // Le solicita al usuario su nuevo nombre
+    cin >> nuevoNombreUsuario; //guarda el nuevo nombre
+    cout << "Ingrese una nueva contraseña: "; // Le solicita al usuario su nueva contraseña
+    cin >> nuevaContraseña; // Guarda la nueva contraseña
+
+    
+    for (int i = 0; i < MAX_USUARIOS; i++) { // Busca al usuario y actualiza sus datos
+        if (usuarios[i][0] == nombreUsuario) {
+            usuarios[i][0] = nuevoNombreUsuario;  // Actualiza el nombre de usuario
+            usuarios[i][1] = nuevaContraseña;  // Actualiza la contraseña
+            cout << "Datos de usuario modificados correctamente.\n";
+            nombreUsuario = nuevoNombreUsuario;  // Actualiza el nombre de usuario en la variable principal
+            return;
+        }
+    }
+
+    cout << "No se encontraron datos para modificar.\n";  // Si no se encuentra el usuario
+}
+
+int main() // Llama a la funcion principal
+{
+    Mostrar_Desarrolladores(); // Llama a la funcion para mostrar desarrolladores nuevamente
+
+    string nombreUsuario; // Crea la variable de nombre de usuario
+    int opcion; // Crea una variable de tipo entero para las opciones de las que dispone el usuario
+    bool sesionIniciada = false; // variable tipo booleana para seguir dos opciones: si el usuario digita datos incorrectos para seguir en el registro o cuando se ingresan los datos correctamente para continuar
+
+    while (!sesionIniciada) { // Mientras la sesion se haya iniciado correctamente
+        cout << "Seleccione una opción:\n"; // Indica al ususario que tiene que seleccionar una opcion
+        cout << "1. Registrar usuario\n"; // Opcion uno para el registro de un nuevo usuario
+        cout << "2. Iniciar sesión\n"; // Opcion dos para el inicio de sesion del usuario existente
+        cin >> opcion;
+
+        if (opcion == 1) { // Si la opcion es igual a 1
+            Registrar_Usuario();  // Llama a la función para registrar un usuario
+        } else if (opcion == 2) { // Si la opcion es igual a dos
+            sesionIniciada = Iniciar_Sesion(nombreUsuario);  // Intenta iniciar sesión
+        } else { // De lo contrario 
+            cout << "Opción no válida, intente nuevamente.\n"; // Muestra mensaje de erro e indica que se tiene que volver a intentar
+        }
+    }
+
+    bool continuar = true; // Si la variable booleana "continuar" es verdadera:
+    while (continuar) { // Mientras continuar se verdadero se ejecutara repetidamente
+        cout << "\nSeleccione una opción:\n"; // Indica seleccionar un opcion
+        cout << "1. Ingresar datos al archivo\n"; // Opcion para ingresar los datos al archivo
+        cout << "2. Mostrar archivo\n"; // Opcion para mostrar los datos del archivo
+        cout << "3. Eliminar archivo\n"; // Opcion para la eliminacion del archivo
+        cout << "4. Modificar archivo\n"; // Opcion para la modificacion del archivo
+        cout << "5. Modificar datos del usuario\n"; // Opcion para cambiar los datos del usuario
+        cout << "6. Salir\n"; // Opcion para salir de la interfaz
+        cin >> opcion; // Guarda la opcion Escogida
+
+        switch (opcion) { // switch cambia en casos para ejecutar la parte del codigo que sea escogida
+            case 1: // Caso 1
+                Ingresar_Datos_al_Archivo(nombreUsuario);  // Llama a la función para ingresar datos
+                break; // Para terminar la funcion dentro del switch
+            case 2: // Caso 2
+                Mostrar_Archivo_Usuario(nombreUsuario);  // Muestra el archivo del usuario
+                break; // Para terminar la funcion dentro del switch
+            case 3: // Caso 3
+                Eliminar_Archivo(nombreUsuario);  // Elimina el archivo del usuario
+                break; // Para terminar la funcion dentro del switch
+            case 4: // Caso 4
+                Modificar_Archivo(nombreUsuario);  // Modifica el archivo del usuario
+                break; // Para terminar la funcion dentro del switch
+            case 5: // Caso 5
+                Modificar_Datos_Usuario(nombreUsuario);  // Modifica los datos del usuario
+                break; // Para terminar la funcion dentro del switch
+            case 6: // Caso 6
+                continuar = false;  // Sale del ciclo
+                break; // Para terminar la funcion dentro del switch
+            default: // Si a opcion no coincide con ninguno de los casos
+                cout << "Opción no válida, intente nuevamente.\n"; //  Muestra el mensaje de error
+        }
+    }
+
+    cout << "Saliendo del programa...\n";  // Mensaje de salida
+    return 0; // Finaliza el programa
+}
+
